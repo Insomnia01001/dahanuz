@@ -16,6 +16,21 @@ class KranCreate(KranBase):
 class KranImgCreate(BaseModel):
     kran_id: int
     image_url: str
+class KranImgOut(BaseModel):
+    id: int
+    image_url: str
+
+    class Config:
+        orm_mode = True
+from typing import List
+
+class KranOut(KranBase):
+    id: int
+    images: List[KranImgOut] = []
+
+    class Config:
+        orm_mode = True
+
 
 
 class LiftBase(BaseModel):

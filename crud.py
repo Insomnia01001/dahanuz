@@ -1,8 +1,11 @@
-from fastapi import HTTPException
+from fastapi import HTTPException,Depends,APIRouter
 from sqlalchemy.orm import Session
 from models import Kran, KranImg, Lift, LiftImg
-
-def get_krans(db: Session):
+from schemas import KranOut
+from db import get_db
+router = APIRouter()
+@router.get("/krans/", response_model=list[KranOut])
+def get_krans(db: Session = Depends(get_db)):
     krans = db.query(Kran).all()
     if not krans:
         raise HTTPException(status_code=404, detail="Kranlar topilmadi")
