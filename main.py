@@ -1,11 +1,12 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends,APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from db import engine, get_db
-from models import Base
+from models import Base,Kran
 import crud
 import schemas
+from sqlalchemy.orm import joinedload
 
 
 app = FastAPI()
@@ -23,9 +24,18 @@ app.add_middleware(
 
 # ================== KRAN ==================
 
-@app.get("/krans/")
+# @app.get("/krans/")
+# def get_krans(db: Session = Depends(get_db)):
+#     return crud.get_krans(db)
+@app.get("/krans/", response_model=list[schemas.KranOut])
 def get_krans(db: Session = Depends(get_db)):
-    return crud.get_krans(db)
+    krans = (
+        db.query(Kran)
+        .options(joinedload(Kran.images))
+        .all()
+    )
+    return krans
+
 
 
 @app.get("/krans/{kran_id}")
