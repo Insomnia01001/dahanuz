@@ -19,6 +19,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://dahanuz-frontend.netlify.app",
+         "https://dahan.uz",
+    "http://dahan.uz"
     ],
     allow_credentials=True,
     allow_methods=["*"],
