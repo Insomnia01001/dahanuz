@@ -2,33 +2,33 @@ from fastapi import HTTPException,Depends,APIRouter
 from sqlalchemy.orm import Session
 from models import Kran, KranImg, Lift, LiftImg
 from schemas import KranOut
-from db import get_db
+from database import get_db
 import schemas
 
 
-def get_kran_with_img_by_id(db: Session, kran_id: int):
-    kran = db.query(Kran).filter(Kran.id == kran_id).first()
-    if not kran:
-        raise HTTPException(status_code=404, detail="Kran topilmadi")
+# def get_kran_with_img_by_id(db: Session, kran_id: int):
+#     kran = db.query(Kran).filter(Kran.id == kran_id).first()
+#     if not kran:
+#         raise HTTPException(status_code=404, detail="Kran topilmadi")
 
-    return {
-        "id": kran.id,
-        "name_uz": kran.name_uz,
-        "name_ru": kran.name_ru,
-        "maxliftingcap": kran.maxliftingcap,
-        "maxradius": kran.maxradius,
-        "liftingcap": kran.liftingcap,
-        "hooklifting": kran.hooklifting,
-        "description_uz": kran.description_uz,
-        "description_ru": kran.description_ru,
-        "images": [
-            {
-                "id": img.id,
-                "image_url": img.image_url
-            }
-            for img in kran.images
-        ]
-    }
+#     return {
+#         "id": kran.id,
+#         "name_uz": kran.name_uz,
+#         "name_ru": kran.name_ru,
+#         "maxliftingcap": kran.maxliftingcap,
+#         "maxradius": kran.maxradius,
+#         "liftingcap": kran.liftingcap,
+#         "hooklifting": kran.hooklifting,
+#         "description_uz": kran.description_uz,
+#         "description_ru": kran.description_ru,
+#         "images": [
+#             {
+#                 "id": img.id,
+#                 "image_url": img.image_url
+#             }
+#             for img in kran.images
+#         ]
+#     }
 
 
 def add_kran(db: Session, kran):

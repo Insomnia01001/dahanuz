@@ -15,8 +15,8 @@ class Kran(Base):
     liftingcap = Column(String(80))
     hooklifting = Column(String(80))
 
-    description_uz = Column(String(400))
-    description_ru = Column(String(400))
+    description_uz = Column(String(800))
+    description_ru = Column(String(800))
 
     images = relationship("KranImg", back_populates="kran", cascade="all, delete")
 

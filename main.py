@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Depends,APIRouter
+from fastapi import FastAPI, Depends,APIRouter,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-from db import engine, get_db
-from models import Base,Kran
+from database import engine, get_db
+from models import Base,Kran,Lift
 import crud
 import schemas
 from sqlalchemy.orm import joinedload
@@ -24,9 +24,6 @@ app.add_middleware(
 
 # ================== KRAN ==================
 
-# @app.get("/krans/")
-# def get_krans(db: Session = Depends(get_db)):
-#     return crud.get_krans(db)
 @app.get("/krans/", response_model=list[schemas.KranOut])
 def get_krans(db: Session = Depends(get_db)):
     krans = (
@@ -38,9 +35,20 @@ def get_krans(db: Session = Depends(get_db)):
 
 
 
-@app.get("/krans/{kran_id}")
+
+@app.get("/krans/{kran_id}", response_model=schemas.KranDetailOut)
 def get_kran_by_id(kran_id: int, db: Session = Depends(get_db)):
-    return crud.get_kran_with_img_by_id(db, kran_id)
+    kran = (
+        db.query(Kran)
+        .options(joinedload(Kran.images))
+        .filter(Kran.id == kran_id)
+        .first()
+    )
+
+    if not kran:
+        raise HTTPException(status_code=404, detail="Kran not found")
+
+    return kran
 
 
 @app.post("/krans/add/")
@@ -69,14 +77,25 @@ def delete_kran(kran_id: int, db: Session = Depends(get_db)):
 
 # ================== LIFT ==================
 
-@app.get("/lifts/")
+@app.get("/lifts/",response_model=list[schemas.LiftOut])
 def get_lifts(db: Session = Depends(get_db)):
-    return crud.get_lifts(db)
+    lifts = (db.query(Lift).options(joinedload(Lift.images)).all())
+    return lifts
 
 
-@app.get("/lifts/{lift_id}")
+@app.get("/lifts/{lift_id}", response_model=schemas.LiftOut)
 def get_lift_by_id(lift_id: int, db: Session = Depends(get_db)):
-    return crud.get_lift_by_id(db, lift_id)
+    lift = (
+        db.query(Lift)
+        .options(joinedload(Lift.images))
+        .filter(Lift.id == lift_id)
+        .first()
+    )
+
+    if not lift:
+        raise HTTPException(status_code=404, detail="Lift not found")
+
+    return lift
 
 
 @app.post("/lifts/add/")
