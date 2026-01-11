@@ -12,7 +12,6 @@ from sqlalchemy.orm import joinedload
 app = FastAPI()
 
 # 🔹 Jadvallarni yaratish
-Base.metadata.create_all(bind=engine)
 
 # 🔹 CORS
 
